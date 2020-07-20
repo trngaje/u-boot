@@ -308,11 +308,15 @@ static void charge_show_bmp(int idx, struct udevice *fg)
 	unsigned long bmp_mem, bmp_copy;
 	int ret;
 	int battery = 0;
+	int soc = 0;
 	char cmd[64];
 
 	if (fg)
+	{
 		battery = fuel_gauge_get_voltage(fg);
-
+		soc = fuel_gauge_update_get_soc(fg);
+	}
+	
 	debug("charge_show_bmp idx %d, name %s, battery %d\n", idx, image[idx].name, battery);
 
 	/* draw logo bmp */
@@ -343,7 +347,7 @@ static void charge_show_bmp(int idx, struct udevice *fg)
 		printf("[%s] show_bmp fail\n", __func__);
 
 	/* show battery voltage level */
-	sprintf(cmd, "%d.%dV", (battery / 1000), ((battery % 1000) / 100));
+	sprintf(cmd, "%d.%dV (%d%%)", (battery / 1000), ((battery % 1000) / 100), soc);
 	lcd_setfg_color("white");
 	lcd_printf(0, 18, 1, "%s", cmd);
 }

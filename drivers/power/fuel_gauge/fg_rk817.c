@@ -357,8 +357,12 @@ static void rk817_bat_init_voltage_kb(struct rk817_battery_device *battery)
 		battery->voltage_k = (1050 - 600) * 1000 / DIV(vcalib1 - vcalib0);
 		battery->voltage_b = 1050 - (battery->voltage_k * vcalib1) / 1000;
 	} else {
+/*
 		battery->voltage_k = (4025 - 2300) * 1000 / DIV(vcalib1 - vcalib0);
 		battery->voltage_b = 4025 - (battery->voltage_k * vcalib1) / 1000;
+*/
+		battery->voltage_k = (4200 - 2600) * 1000 / DIV(vcalib1 - vcalib0);
+		battery->voltage_b = 4200 - (battery->voltage_k * vcalib1) / 1000;
 	}
 }
 
@@ -385,7 +389,7 @@ static int rk817_bat_get_USB_voltage(struct rk817_battery_device *battery)
 	val = rk817_bat_read(battery, USB_VOL_L) << 0;
 	val |= rk817_bat_read(battery, USB_VOL_H) << 8;
 
-	vol = (battery->voltage_k * val / 1000 + battery->voltage_b) * 60 / 46;
+	vol = (battery->voltage_k * val / 1000 + battery->voltage_b); // * 60 / 46;
 	if (battery->variant == RK809_ID) {
 		vol_temp = vol * battery->bat_res_up / battery->bat_res_down + vol;
 		vol = vol_temp;
@@ -401,7 +405,7 @@ static int rk817_bat_get_sys_voltage(struct rk817_battery_device *battery)
 	val = rk817_bat_read(battery, SYS_VOL_H) << 8;
 	val |= rk817_bat_read(battery, SYS_VOL_L) << 0;
 
-	vol = (battery->voltage_k * val / 1000 + battery->voltage_b) * 60 / 46;
+	vol = (battery->voltage_k * val / 1000 + battery->voltage_b); // * 60 / 46;
 	if (battery->variant == RK809_ID) {
 		vol_temp = vol * battery->bat_res_up / battery->bat_res_down + vol;
 		vol = vol_temp;
